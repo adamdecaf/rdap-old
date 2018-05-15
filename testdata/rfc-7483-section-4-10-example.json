@@ -1,0 +1,44 @@
+{
+  "rdapConformance" :
+  [
+    "rdap_level_0"
+  ],
+  "notices" :
+  [
+    {
+      "title" : "Content Removed",
+      "description" :
+      [
+        "Without full authorization, content has been removed.",
+        "Sorry, dude!"
+      ],
+      "links" :
+      [
+        {
+          "value" : "http://example.net/ip/192.0.2.0/24",
+          "rel" : "alternate",
+          "type" : "text/html",
+          "href" : "http://www.example.com/redaction_policy.html"
+        }
+      ]
+    }
+  ],
+  "lang" : "en",
+  "objectClassName" : "ip network",
+  "startAddress" : "192.0.2.0",
+  "endAddress" : "192.0.2.255",
+  "handle" : "XXXX-RIR",
+  "ipVersion" : "v4",
+  "name": "NET-RTR-1",
+  "parentHandle" : "YYYY-RIR",
+  "remarks" :
+  [
+    {
+      "description" :
+      [
+        "She sells sea shells down by the sea shore.",
+        "Originally written by Terry Sullivan."
+      ]
+    }
+  ]
+}
