@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-// RFC 7483 Section 4.9
+// RFC7483 Section 4.9
 // An objectClassName is REQUIRED in all RDAP response objects so that
 // the type of the object can be interpreted.
 
-// RFC 7483 Section 5.1
+// RFC7483 Section 5.1
 // See rfc-7483-section-5-1-example.json
 type Entity struct {
 	Handle string
 	Title string
-	// Role // RFC 7483 Section 10.2.4
+	// Role // RFC7483 Section 10.2.4
 	// Addresses []...
 	// Telephone []...
 	Emails []string
@@ -32,7 +32,7 @@ type Entity struct {
 	// "objectClassName" : "entity"
 }
 
-// RFC 7483 Section 5.2
+// RFC7483 Section 5.2
 // See rfc-7483-section-5-2-example.json
 type Nameserver struct {
 	// objectClassName -- the string "nameserver"
@@ -43,7 +43,7 @@ type Nameserver struct {
 	// IPV6Addresses []...
 }
 
-// RFC 7483 Section 5.3
+// RFC7483 Section 5.3
 // See rfc-7483-section-5-3-example.json
 type Domain struct {
 	// objectClassName -- the string "domain"
@@ -66,7 +66,7 @@ type Domain struct {
 	// domain is referenced.  See Section 5.4
 }
 
-// RFC 7483 Section 5.4
+// RFC7483 Section 5.4
 // See rfc-7483-section-5-4-example.json
 type IPNetwork struct {
 	// "objectClassName" : "ip network",
@@ -89,7 +89,7 @@ type IPNetwork struct {
 	// status
 }
 
-// RFC 7483 Section 5.5
+// RFC7483 Section 5.5
 // See rfc-7483-section-5-5-example.json
 type Autnum struct {
 	// objectClassName -- the string "autnum"
@@ -115,7 +115,7 @@ type Autnum struct {
 	// country code of the autnum
 }
 
-// RFC 7483 Section 6
+// RFC7483 Section 6
 // See rfc-7483-section-6-example.json
 type Error struct {
 	Code int `json:"errorCode"`
