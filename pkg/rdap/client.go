@@ -58,6 +58,8 @@ type Client struct {
 // IPv4 dotted decimal or IPv6 [RFC5952] address OR
 // an IPv4 or IPv6 Classless Inter-domain Routing (CIDR) [RFC4632] notation address block (i.e., XXX/YY)
 func (c *Client) IP(addr string) (*IPNetwork, error) {
+	// TODO(adam): parse v4, v6, and CIDR (of both)
+
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/ip/%s", c.BaseAddress, addr), nil)
 	if err != nil {
 		return nil, err
