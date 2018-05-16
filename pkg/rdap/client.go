@@ -46,40 +46,19 @@ var (
 	}
 )
 
-// Client is an RDAP compatiable
-//
-// RFC7482 Section 3.1
-// o  'ip': Used to identify IP networks and associated data referenced
-//    using either an IPv4 or IPv6 address.
-
-// o  'autnum': Used to identify Autonomous System number registrations
-//    and associated data referenced using an asplain Autonomous System
-//    number.
-
-// o  'domain': Used to identify reverse DNS (RIR) or domain name (DNR)
-//    information and associated data referenced using a fully qualified
-//    domain name.
-
-// o  'nameserver': Used to identify a nameserver information query
-//    using a host name.
-
-// o  'entity': Used to identify an entity information query using a
-//    string identifier.
-
+// Client is is used to make RDAP HTTP requests against a server.
 type Client struct {
 	Underlying *http.Client
 
-	// TODO(adam)
+	// Which RDAP server address to use, by default will be the
+	// RDAP official server.
 	BaseAddress string
 
 	setup sync.Once
 }
 
-// RFC7482 3.1.1.  IP Network Path Segment Specification
-//    Syntax: ip/<IP address> or ip/<CIDR prefix>/<CIDR length>
-//
-// IPv4 dotted decimal or IPv6 [RFC5952] address OR
-// an IPv4 or IPv6 Classless Inter-domain Routing (CIDR) [RFC4632] notation address block (i.e., XXX/YY)
+// IP represents a /ip/$foo request, where $foo is either an IPv4, IPv6
+// address or a CIDR network range.
 func (c *Client) IP(addr string) (*IPNetwork, error) {
 	ip := net.ParseIP(addr)
 	_, net, _ := net.ParseCIDR(addr)
@@ -109,7 +88,7 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nil, errors.New("") // TODO(Adam)
+	return nil, errors.New("") // TODO(Adam): parse successful response
 }
 
 // RFC7482 3.1.2.  Autonomous System Path Segment Specification
@@ -212,9 +191,13 @@ func (c *Client) Help() {}
 // The appropriate response to /help queries as defined by [RFC7482] is
 // to use the notices structure as defined in Section 4.3.
 
-// Clients must follow redirects // RFC7480 Section 5.2
-// error on 404, try and parse resp.Body still // RFC7480 Section 5.3
-// 429 status, return Retry-After header // RFC7480 Section 5.5
+// do is a helper method which will initialize some internal properties of a
+// Client (if not already set) and perform some sanity checks on the request.
+//
+// If the underlying HTTP call fails do will attempt to read out an Error message
+// and close the response body.
+//
+// On a successful request do will not close or alter the response.
 func (c *Client) do(req *http.Request) (*http.Response, error) {
 	c.setup.Do(func() {
 		if c.Underlying == nil {
@@ -225,33 +208,48 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 			c.BaseAddress = DefaultServer
 		}
 		if req.URL.Host == "" {
-			u, err := url.Parse(DefaultServer + req.URL.Path)
+			raw := DefaultServer + req.URL.Path
+			u, err := url.Parse(raw)
 			if err != nil {
-				panic(err) // TODO
+				return nil, fmt.Errorf("invalid url %q: %v", raw, err)
 			}
 			req.URL = u
 		}
 	})
-
-	resp, err := c.Underlying.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("%s", err) // TODO(Adam):
-	}
-
-	if resp.StatusCode >= 400 && resp.StatusCode < 499 {
-		// try and marshal out an Error
-		if resp.Body != nil {
-			return nil, c.parseError(resp.Body)
-		}
-		return nil, nil // TODO
-	}
-	return resp, nil
 
 	// RFC7481 Section 3.5
 	// As noted in Section 3.2, the HTTP "basic" authentication scheme can
 	// be used to authenticate a client.  When this scheme is used, HTTP
 	// over TLS MUST be used to protect the client's credentials from
 	// disclosure while in transit.
+	v := req.Header.Get("Authentication")
+	if v != "" && req.URL.Scheme != "https" {
+		return nil, fmt.Errorf("invalid scheme %q in request with Authentication header", req.URL.Scheme)
+	}
+
+	resp, err := c.Underlying.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error during request: %v", err)
+	}
+
+	// TODO(Adam): We should check for both of these
+	// Clients must follow redirects // RFC7480 Section 5.2
+	// 429 status, return Retry-After header // RFC7480 Section 5.5
+
+	if resp.StatusCode >= 400 {
+		if resp.Body != nil {
+			// RFC7480 Section 5.3 states servers MAY return an error response
+			// so we will try and parse that out from the body
+			return nil, c.parseError(resp.Body)
+		}
+		// RFC7480 Sectin 5.3:
+		// If a server wishes to inform the client that information about the
+		// query is available, but cannot include the information in the
+		// response to the client for policy reasons, the server MUST respond
+		// with an appropriate response code out of HTTP's 4xx range.
+		return nil, fmt.Errorf("%d error during request to %s", resp.StatusCode, req.URL)
+	}
+	return resp, nil
 }
 
 // parseError attempts to parse `bs` as an Error type
