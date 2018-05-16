@@ -206,6 +206,10 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 
 		if c.BaseAddress == "" {
 			c.BaseAddress = DefaultServer
+		} else {
+			// Drop the trailing slash so we don't accidently double up
+			// in url building.
+			c.BaseAddress = strings.TrimSuffix(c.BaseAddress, "/")
 		}
 		if req.URL.Host == "" {
 			raw := DefaultServer + req.URL.Path
