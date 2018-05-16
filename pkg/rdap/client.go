@@ -44,6 +44,14 @@ var (
 		},
 		Timeout: 30 * time.Second,
 	}
+
+	// RFC7480 Section 4.2 and RFC7483 Section 10.1
+	// mention either application/json or application/rdap+json
+	// can be passed on the Accept header
+	//
+	// However, some implementations don't support the new content type
+	// so we use the standard json mime type.
+	DefaultAcceptHeader = "application/json"
 )
 
 // Client is is used to make RDAP HTTP requests against a server.
@@ -231,6 +239,12 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 		return nil, fmt.Errorf("invalid scheme %q in request with Authentication header", req.URL.Scheme)
 	}
 
+	// Set Accept header if it's not already added
+	if v := req.Header.Get("Accept"); v == "" {
+		req.Header.Set("Accept", DefaultAcceptHeader)
+	}
+
+	// Perform the request
 	resp, err := c.Underlying.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error during request: %v", err)
