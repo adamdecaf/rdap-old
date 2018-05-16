@@ -124,6 +124,9 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
+	if e == nil {
+		return "unknown error"
+	}
 	if len(e.Description) > 0 {
 		return fmt.Sprintf("%s (Code: %d): %s", e.Title, e.Code, strings.Join(e.Description, " "))
 	}
