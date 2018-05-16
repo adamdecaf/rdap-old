@@ -2,75 +2,104 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/adamdecaf/rdap/pkg/rdap"
+	"github.com/adamdecaf/rdap/pkg/rdap/bootstrap"
 )
 
 // TODO(adam): -f (format) flag for output, similar to docker / go templates
 
 func main() {
-	tests := []string{
-		// "8.8.8.8",
-		"192.0.2.0",
+	test := "google.com"
+
+	boot := bootstrap.Registry{}
+	server, err := boot.ForDomain(test)
+	if err != nil {
+		panic(err)
 	}
+	fmt.Printf("Using %s\n", server)
+
+	client := rdap.Client{
+		BaseAddress: server,
+	}
+
+	addrs, err := net.LookupHost(test)
+	if err != nil {
+		panic(err)
+	}
+	if len(addrs) == 0 {
+		panic(fmt.Sprintf("no records found for %s", test))
+	}
+
+	resp, err := client.IP(addrs[0])
+	if err != nil {
+		panic(err)
+	}
+	if resp != nil {
+		fmt.Println(resp)
+	}
+
+	// tests := []string{
+	// 	// "8.8.8.8",
+	// 	"192.0.2.0",
+	// }
 
 	// /ip/$ip[/24] // cidr
 
-	client := rdap.Client{}
+	// for i := range tests {
+	// 	ip := tests[i]
 
-	for i := range tests {
-		ip := tests[i]
+	// 	_, err := client.IP(ip)
+	// 	if err != nil {
+	// 		fmt.Println("C", err)
+	// 	}
 
-		_, err := client.IP(ip)
-		if err != nil {
-			fmt.Println("C", err)
-		}
+	// 	// Allow any http.Client instance
+	// 	// RFC 7481 Section 3.2
+	// 	// "Clients MUST support both (Basic or Digest auth) to interoperate with
+	// 	// servers that support one or the other."
+	// 	// Clients can auth with X.509 certificates, SAML, OpenID, OAuth, etc..
 
-		// Allow any http.Client instance
-		// RFC 7481 Section 3.2
-		// "Clients MUST support both (Basic or Digest auth) to interoperate with
-		// servers that support one or the other."
-		// Clients can auth with X.509 certificates, SAML, OpenID, OAuth, etc..
+	// 	// RFC 7481 Section 3.5
+	// 	// "It is also possible to encrypt discrete objects (such as command path
+	// 	// segments and JSON-encoded response objects) at one endpoint"
+	// 	// offer body as io.Reader ?
 
-		// RFC 7481 Section 3.5
-		// "It is also possible to encrypt discrete objects (such as command path
-		// segments and JSON-encoded response objects) at one endpoint"
-		// offer body as io.Reader ?
+	// 	// RFC 7483 Section 5.1
+	// 	// The entity object class uses jCard [RFC7095] to represent contact
+	// 	// information, such as postal addresses, email addresses, phone numbers
+	// 	// and names of organizations and individuals.
 
-		// RFC 7483 Section 5.1
-		// The entity object class uses jCard [RFC7095] to represent contact
-		// information, such as postal addresses, email addresses, phone numbers
-		// and names of organizations and individuals.
+	// 	// req, err := http.NewRequest("GET", DefaultServer + fmt.Sprintf("/ip/%s", ip), nil)
+	// 	// if err != nil {
+	// 	// 	panic(err)
+	// 	// }
 
-		// req, err := http.NewRequest("GET", DefaultServer + fmt.Sprintf("/ip/%s", ip), nil)
-		// if err != nil {
-		// 	panic(err)
-		// }
+	// 	// RFC 7480 Section 4.2
+	// 	// either can be used
+	// 	//
+	// 	// RFC 7483 Section 10.1
+	// 	// application/rdap+json
+	// 	// req.Header.Set("Accept", "application/json")
 
-		// RFC 7480 Section 4.2
-		// either can be used
-		//
-		// RFC 7483 Section 10.1
-		// application/rdap+json
-		// req.Header.Set("Accept", "application/json")
+	// 	// resp, err := http.DefaultClient.Do(req)
+	// 	// if err != nil {
+	// 	// 	panic(err)
+	// 	// }
+	// 	// defer resp.Body.Close()
 
-		// resp, err := http.DefaultClient.Do(req)
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// defer resp.Body.Close()
+	// 	// fmt.Println(resp.Header)
+	// 	// if v := resp.Header.Get("Location"); v != "" {
+	// 	// 	fmt.Printf("Location: %s\n", v)
+	// 	// }
 
-		// fmt.Println(resp.Header)
-		// if v := resp.Header.Get("Location"); v != "" {
-		// 	fmt.Printf("Location: %s\n", v)
-		// }
-
-		// bs, err := ioutil.ReadAll(resp.Body)
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// fmt.Printf("%s\n%s\n\n", ip, bs)
-	}
+	// 	// bs, err := ioutil.ReadAll(resp.Body)
+	// 	// if err != nil {
+	// 	// 	panic(err)
+	// 	// }
+	// 	// fmt.Printf("%s\n%s\n\n", ip, bs)
+	// }
 }
 
 // RFC 7482 Section
