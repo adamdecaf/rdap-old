@@ -221,8 +221,11 @@ func (c *Client) Help() {}
 // to use the notices structure as defined in Section 4.3.
 
 func (c *Client) makeRequest(seg string) (*http.Request, error) {
-	base := strings.TrimSuffix(c.BaseAddress, "/")
-	return http.NewRequest("GET", path.Join(base, seg), nil)
+	u, err := url.Parse(strings.TrimSuffix(c.BaseAddress, "/"))
+	if err != nil {
+		return nil, err
+	}
+	return http.NewRequest("GET", fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, path.Join(u.Path, seg)), nil)
 }
 
 // do is a helper method which will initialize some internal properties of a
