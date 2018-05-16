@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "publication": "2024-01-07T10:11:12Z",
+  "description": "RDAP Bootstrap file for example registries.",
+  "services": [
+    [
+      ["1.0.0.0/8", "192.0.0.0/8"],
+      [
+        "https://rir1.example.com/myrdap/"
+      ]
+    ],
+    [
+      ["28.2.0.0/16", "192.0.2.0/24"],
+      [
+        "http://example.org/"
+      ]
+    ],
+    [
+      ["28.3.0.0/16"],
+      [
+        "https://example.net/rdaprir2/",
+        "http://example.net/rdaprir2/"
+      ]
+    ]
+  ]
+}
