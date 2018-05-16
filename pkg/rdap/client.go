@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"sync"
@@ -58,8 +59,26 @@ type Client struct {
 // IPv4 dotted decimal or IPv6 [RFC5952] address OR
 // an IPv4 or IPv6 Classless Inter-domain Routing (CIDR) [RFC4632] notation address block (i.e., XXX/YY)
 func (c *Client) IP(addr string) (*IPNetwork, error) {
-	// TODO(adam): parse v4, v6, and CIDR (of both)
+	ip := net.ParseIP(addr)
+	_, net, _ := net.ParseCIDR(addr)
 
+	// sanity check the input
+	if ip == nil && net == nil {
+		return nil, fmt.Errorf("invalid ip or cidr specified: %q", addr)
+	}
+	if len(ip) == 0 && (len(net.IP) == 0 || len(net.Mask) == 0) {
+		return nil, fmt.Errorf("invalid ip or cidr specified: %q", addr)
+	}
+
+	// set parsed form back as input
+	if len(ip) > 0 {
+		addr = ip.String()
+	}
+	if len(net.IP) > 0 {
+		addr = net.String()
+	}
+
+	// Build and make the actual HTTP request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/ip/%s", c.BaseAddress, addr), nil)
 	if err != nil {
 		return nil, err
