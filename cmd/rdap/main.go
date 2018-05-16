@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/adamdecaf/rdap/pkg/rdap"
 	"github.com/adamdecaf/rdap/pkg/rdap/bootstrap"
@@ -13,10 +14,16 @@ import (
 func main() {
 	test := "google.com"
 
-	boot := bootstrap.Registry{}
+	boot := bootstrap.Registry{
+		// DNSEndpoint: "http://rdap.arin.net/bootstrap/help",
+	}
 	server, err := boot.ForDomain(test)
 	if err != nil {
 		panic(err)
+	}
+	if server == "" {
+		fmt.Println("Unable to find data")
+		os.Exit(1)
 	}
 	fmt.Printf("Using %s\n", server)
 
