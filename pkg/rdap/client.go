@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 )
@@ -75,7 +76,7 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	if ip == nil && net == nil {
 		return nil, fmt.Errorf("invalid ip or cidr specified: %q", addr)
 	}
-	if len(ip) == 0 && (len(net.IP) == 0 || len(net.Mask) == 0) {
+	if net != nil && (len(net.IP) == 0 && len(net.Mask) == 0) {
 		return nil, fmt.Errorf("invalid ip or cidr specified: %q", addr)
 	}
 
@@ -83,7 +84,7 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	if len(ip) > 0 {
 		addr = ip.String()
 	}
-	if len(net.IP) > 0 {
+	if net != nil && len(net.IP) > 0 {
 		addr = net.String()
 	}
 
@@ -92,10 +93,26 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, err = c.do(req)
+	resp, err := c.do(req)
 	if err != nil {
 		return nil, err
 	}
+	if resp == nil || resp.Body == nil {
+		return nil, fmt.Errorf("no body on successful response for %s", req.URL)
+	}
+	defer resp.Body.Close()
+
+	// Parse successful response
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read body from %s", req.URL)
+	}
+	fmt.Println(string(bs))
+	var ipNetwork IPNetworkJSON
+	if err := json.Unmarshal(bs, &ipNetwork); err != nil {
+		return nil, fmt.Errorf("error parsing ip network response: %v", err)
+	}
+	fmt.Println("B: ", ipNetwork)
 	return nil, errors.New("") // TODO(Adam): parse successful response
 }
 
@@ -223,7 +240,7 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 			raw := DefaultServer + req.URL.Path
 			u, err := url.Parse(raw)
 			if err != nil {
-				return nil, fmt.Errorf("invalid url %q: %v", raw, err)
+				panic(fmt.Errorf("invalid url %q: %v", raw, err))
 			}
 			req.URL = u
 		}
@@ -283,7 +300,6 @@ func (c *Client) parseError(r io.ReadCloser) *Error {
 	}
 	var err Error
 	if e := json.Unmarshal(bs, &err); e != nil {
-		fmt.Println(e)
 		return nil
 	}
 	return &err

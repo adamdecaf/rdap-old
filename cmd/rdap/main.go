@@ -10,8 +10,8 @@ import (
 
 func main() {
 	tests := []string{
-		"8.8.8.8",
-		// "192.0.2.0",
+		// "8.8.8.8",
+		"192.0.2.0",
 	}
 
 	// /ip/$ip[/24] // cidr
@@ -23,7 +23,7 @@ func main() {
 
 		_, err := client.IP(ip)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("C", err)
 		}
 
 		// Allow any http.Client instance
