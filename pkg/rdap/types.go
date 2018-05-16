@@ -13,7 +13,7 @@ import (
 // See rfc-7483-section-5-1-example.json
 type Entity struct {
 	Handle string
-	Title string
+	Title  string
 	// Role // RFC7483 Section 10.2.4
 	// Addresses []...
 	// Telephone []...
@@ -118,8 +118,8 @@ type Autnum struct {
 // RFC7483 Section 6
 // See rfc-7483-section-6-example.json
 type Error struct {
-	Code int `json:"errorCode"`
-	Title string `json:"title"`
+	Code        int      `json:"errorCode"`
+	Title       string   `json:"title"`
 	Description []string `json:"description"`
 }
 

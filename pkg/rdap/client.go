@@ -1,6 +1,7 @@
 package rdap
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,18 +11,39 @@ import (
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 )
 
 var (
 	// RDAP Server URL's
 	// From https://about.rdap.org/
 	DefaultServer = "https://rdap.org"
-	CentralNic = "https://www.centralnic.com/registry/labs/rdap"
-	VerisignDNRD = "http://dnrd.verisignlabs.com/dnrd-ap/help/"
-	APNIC = "https://www.apnic.net/apnic-info/whois_search/about/rdap"
-	ARIN = "https://www.arin.net/resources/whoisrws/"
-	LACNIC = "http://restfulwhoisv2.labs.lacnic.net/restfulwhois/"
-	RIPE = "https://rdap.db.ripe.net"
+	CentralNic    = "https://www.centralnic.com/registry/labs/rdap"
+	VerisignDNRD  = "http://dnrd.verisignlabs.com/dnrd-ap/help/"
+	APNIC         = "https://www.apnic.net/apnic-info/whois_search/about/rdap"
+	ARIN          = "https://www.arin.net/resources/whoisrws/"
+	LACNIC        = "http://restfulwhoisv2.labs.lacnic.net/restfulwhois/"
+	RIPE          = "https://rdap.db.ripe.net"
+
+	// Setup for the default http.Client used
+	DefaultHTTPClient = &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+				DualStack: true,
+			}).DialContext,
+			TLSClientConfig: &tls.Config{
+				MinVersion: tls.VersionTLS12,
+				MaxVersion: tls.VersionTLS12,
+			},
+			TLSHandshakeTimeout:   1 * time.Minute,
+			IdleConnTimeout:       1 * time.Minute,
+			ResponseHeaderTimeout: 1 * time.Minute,
+			ExpectContinueTimeout: 1 * time.Minute,
+		},
+		Timeout: 30 * time.Second,
+	}
 )
 
 // Client is an RDAP compatiable
@@ -185,18 +207,18 @@ func (c *Client) EntitySearch() {}
 // policy, supported authentication methods, supported extensions,
 // technical support contact, etc.) from an RDAP server.
 func (c *Client) Help() {}
+
 // RFC7483 Section 7
 // The appropriate response to /help queries as defined by [RFC7482] is
 // to use the notices structure as defined in Section 4.3.
-
 
 // Clients must follow redirects // RFC7480 Section 5.2
 // error on 404, try and parse resp.Body still // RFC7480 Section 5.3
 // 429 status, return Retry-After header // RFC7480 Section 5.5
 func (c *Client) do(req *http.Request) (*http.Response, error) {
-	c.setup.Do(func(){
+	c.setup.Do(func() {
 		if c.Underlying == nil {
-			c.Underlying = &http.Client{} // TODO(adam): set default in this package
+			c.Underlying = DefaultHTTPClient
 		}
 
 		if c.BaseAddress == "" {
