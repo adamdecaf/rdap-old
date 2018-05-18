@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "publication": "YYYY-MM-DDTHH:MM:SSZ",
+  "description": "Some text",
+  "services": [
+    [
+      ["net", "com"],
+      [
+        "https://registry.example.com/myrdap/"
+      ]
+    ],
+    [
+      ["org", "mytld"],
+      [
+        "http://example.org/"
+      ]
+    ],
+    [
+      ["xn--zckzah"],
+      [
+        "https://example.net/rdapxn--zckzah/",
+        "http://example.net/rdapxn--zckzah/"
+      ]
+    ]
+  ]
+}

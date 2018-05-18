@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"path"
 	"strings"
 	"sync"
 	"time"
@@ -37,6 +38,8 @@ var (
 			TLSClientConfig: &tls.Config{
 				MinVersion: tls.VersionTLS12,
 				MaxVersion: tls.VersionTLS12,
+
+				InsecureSkipVerify: true, // TODO(adam)
 			},
 			TLSHandshakeTimeout:   1 * time.Minute,
 			IdleConnTimeout:       1 * time.Minute,
@@ -89,7 +92,8 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	}
 
 	// Build and make the actual HTTP request
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/ip/%s", c.BaseAddress, addr), nil)
+	req, err := c.makeRequest(fmt.Sprintf("/ip/%s", addr))
+	fmt.Println(req.URL)
 	if err != nil {
 		return nil, err
 	}
@@ -215,6 +219,14 @@ func (c *Client) Help() {}
 // RFC7483 Section 7
 // The appropriate response to /help queries as defined by [RFC7482] is
 // to use the notices structure as defined in Section 4.3.
+
+func (c *Client) makeRequest(seg string) (*http.Request, error) {
+	u, err := url.Parse(strings.TrimSuffix(c.BaseAddress, "/"))
+	if err != nil {
+		return nil, err
+	}
+	return http.NewRequest("GET", fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, path.Join(u.Path, seg)), nil)
+}
 
 // do is a helper method which will initialize some internal properties of a
 // Client (if not already set) and perform some sanity checks on the request.
