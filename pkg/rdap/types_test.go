@@ -2,6 +2,7 @@ package rdap
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"testing"
 )
 
@@ -48,5 +49,27 @@ func TestError__verisignlabs(t *testing.T) {
 			t.Error(e.Description)
 		}
 		t.Errorf("len(e.Description)=%d", len(e.Description))
+	}
+}
+
+func TestDomain__verisign_google(t *testing.T) {
+	bs, err := ioutil.ReadFile("../../testdata/verisign-google-domain.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var domain Domain
+	if err := json.Unmarshal(bs, &domain); err != nil {
+		t.Fatal(err)
+	}
+
+	if domain.ObjectClassName != "domain" {
+		t.Errorf("got %q", domain.ObjectClassName)
+	}
+	if domain.Handle != "2138514-VRSN" {
+		t.Errorf("got %q", domain.Handle)
+	}
+	if domain.LDHName != "google.com" {
+		t.Errorf("got %q", domain.LDHName)
 	}
 }

@@ -1,0 +1,283 @@
+{
+    "rdapConformance": [
+        "rdap_level_0",
+        "rdap_objectTag_level_0",
+        "rdap_openidc_level_0"
+    ],
+    "handle": "2138514-VRSN",
+    "secureDNS": {
+        "delegationSigned": false
+    },
+    "objectClassName": "domain",
+    "port43": "whois.verisign-grs.com",
+    "notices": [
+        {
+            "description": [
+                "Service subject to Terms of Use."
+            ],
+            "links": [
+                {
+                    "href": "http://rdap-pilot.verisignlabs.com/terms_of_use",
+                    "type": "text/html"
+                }
+            ],
+            "title": "Terms of Use"
+        }
+    ],
+    "nameservers": [
+        {
+            "objectClassName": "nameserver",
+            "port43": "whois.verisign-grs.com",
+            "handle": "49292634-VRSN",
+            "ipAddresses": {
+                "v6": [
+                    "2001:4860:4802:38:0:0:0:A"
+                ],
+                "v4": [
+                    "216.239.38.10"
+                ]
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS4.GOOGLE.COM",
+                    "type": "application/rdap+json",
+                    "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS4.GOOGLE.COM"
+                }
+            ],
+            "lang": "en-US",
+            "events": [
+                {
+                    "eventAction": "registration",
+                    "eventDate": "2001-05-02T18:49:49Z"
+                },
+                {
+                    "eventAction": "last changed",
+                    "eventDate": "2018-01-30T13:32:29Z"
+                }
+            ],
+            "ldhName": "NS4.GOOGLE.COM",
+            "status": [
+                "active"
+            ]
+        },
+        {
+            "objectClassName": "nameserver",
+            "port43": "whois.verisign-grs.com",
+            "handle": "49292472-VRSN",
+            "ipAddresses": {
+                "v6": [
+                    "2001:4860:4802:36:0:0:0:A"
+                ],
+                "v4": [
+                    "216.239.36.10"
+                ]
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS3.GOOGLE.COM",
+                    "type": "application/rdap+json",
+                    "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS3.GOOGLE.COM"
+                }
+            ],
+            "lang": "en-US",
+            "events": [
+                {
+                    "eventAction": "registration",
+                    "eventDate": "2001-05-02T18:40:49Z"
+                },
+                {
+                    "eventAction": "last changed",
+                    "eventDate": "2018-02-21T13:28:03Z"
+                }
+            ],
+            "ldhName": "NS3.GOOGLE.COM",
+            "status": [
+                "active"
+            ]
+        },
+        {
+            "objectClassName": "nameserver",
+            "port43": "whois.verisign-grs.com",
+            "handle": "49292405-VRSN",
+            "ipAddresses": {
+                "v6": [
+                    "2001:4860:4802:32:0:0:0:A"
+                ],
+                "v4": [
+                    "216.239.32.10"
+                ]
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS1.GOOGLE.COM",
+                    "type": "application/rdap+json",
+                    "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS1.GOOGLE.COM"
+                }
+            ],
+            "lang": "en-US",
+            "events": [
+                {
+                    "eventAction": "registration",
+                    "eventDate": "2001-05-02T18:35:21Z"
+                },
+                {
+                    "eventAction": "last changed",
+                    "eventDate": "2018-02-21T13:28:03Z"
+                }
+            ],
+            "ldhName": "NS1.GOOGLE.COM",
+            "status": [
+                "active"
+            ]
+        },
+        {
+            "objectClassName": "nameserver",
+            "port43": "whois.verisign-grs.com",
+            "handle": "100278-VRSN",
+            "ipAddresses": {
+                "v6": [
+                    "2001:4860:4802:34:0:0:0:A"
+                ],
+                "v4": [
+                    "216.239.34.10"
+                ]
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS2.GOOGLE.COM",
+                    "type": "application/rdap+json",
+                    "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/nameserver/NS2.GOOGLE.COM"
+                }
+            ],
+            "lang": "en-US",
+            "events": [
+                {
+                    "eventAction": "registration",
+                    "eventDate": "1998-10-08T00:00:00Z"
+                },
+                {
+                    "eventAction": "last changed",
+                    "eventDate": "2018-02-21T13:28:03Z"
+                }
+            ],
+            "ldhName": "NS2.GOOGLE.COM",
+            "status": [
+                "active"
+            ]
+        }
+    ],
+    "entities": [
+        {
+            "objectClassName": "entity",
+            "port43": "whois.verisign-grs.com",
+            "publicIds": [
+                {
+                    "identifier": "292",
+                    "type": "IANA Registrar ID"
+                }
+            ],
+            "vcardArray": [
+                "vcard",
+                [
+                    [
+                        "version",
+                        {
+                        },
+                        "text",
+                        "4.0"
+                    ],
+                    [
+                        "fn",
+                        {
+                        },
+                        "text",
+                        "MarkMonitor Inc.-VRSN"
+                    ],
+                    [
+                        "adr",
+                        {
+                            "type": "work"
+                        },
+                        "text",
+                        [
+                            "",
+                            "",
+                            "3540 E Longwing Ln",
+                            "Meridian",
+                            "ID",
+                            "83646",
+                            "US"
+                        ]
+                    ],
+                    [
+                        "email",
+                        {
+                            "type": "work"
+                        },
+                        "text",
+                        "hostmaster@markmonitor.com"
+                    ]
+                ]
+            ],
+            "roles": [
+                "registrar"
+            ],
+            "handle": "292-VRSN",
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/entity/292-VRSN",
+                    "type": "application/rdap+json",
+                    "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/entity/292-VRSN"
+                }
+            ],
+            "lang": "en-US",
+            "events": [
+                {
+                    "eventAction": "registration",
+                    "eventDate": "2001-02-14T14:49:41Z"
+                },
+                {
+                    "eventAction": "last changed",
+                    "eventDate": "2018-01-24T13:00:07Z"
+                }
+            ]
+        }
+    ],
+    "links": [
+        {
+            "rel": "self",
+            "href": "https://rdap-pilot.verisignlabs.com/rdap/v1/domain/GOOGLE.COM",
+            "type": "application/rdap+json",
+            "value": "https://rdap-pilot.verisignlabs.com/rdap/v1/domain/GOOGLE.COM"
+        }
+    ],
+    "lang": "en-US",
+    "events": [
+        {
+            "eventAction": "registration",
+            "eventDate": "1997-09-15T00:00:00Z"
+        },
+        {
+            "eventAction": "last changed",
+            "eventDate": "2018-02-21T13:36:40Z"
+        },
+        {
+            "eventAction": "expiration",
+            "eventDate": "2020-09-14T00:00:00Z"
+        }
+    ],
+    "ldhName": "google.com",
+    "status": [
+        "client delete prohibited",
+        "client transfer prohibited",
+        "client update prohibited",
+        "server delete prohibited",
+        "server transfer prohibited",
+        "server update prohibited"
+    ]
+}

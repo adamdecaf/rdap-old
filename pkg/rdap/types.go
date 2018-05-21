@@ -46,13 +46,12 @@ type Nameserver struct {
 // RFC7483 Section 5.3
 // See rfc-7483-section-5-3-example.json
 type Domain struct {
-	// objectClassName -- the string "domain"
+	ObjectClassName string `json:"objectClassName"`
 
-	//   handle -- a string representing a registry unique identifier of
-	// the domain object instance
+	Handle string `json:"handle,omitempty"`
+	LDHName string `json:"ldhName,omitempty"`
 
-	//   ldhName -- a string describing a domain name in LDH form as
-	// described in Section 3
+	// TODO(adam)
 
 	// o  secureDNS -- an object with the following members:
 	//   *  zoneSigned -- true if the zone has been signed, false
@@ -64,6 +63,10 @@ type Domain struct {
 
 	// network -- represents the IP network for which a reverse DNS
 	// domain is referenced.  See Section 5.4
+}
+
+func (d Domain) String() string {
+	return fmt.Sprintf("Domain: %s", d.LDHName)
 }
 
 // RFC7483 Section 5.4

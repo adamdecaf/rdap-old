@@ -138,7 +138,40 @@ func (c *Client) Autnum() {}
 //
 // Internationalized Domain Names (IDNs) represented in either A-label
 // or U-label format [RFC5890] are also valid domain names.
-func (c *Client) Domain() {}
+func (c *Client) Domain(fqdn string) (*Domain, error) {
+	// TODO(adam): parse domain?
+	if fqdn == "" {
+		return nil, errors.New("empty FQDN provided")
+	}
+
+	req, err := c.makeRequest(fmt.Sprintf("/domain/%s", fqdn))
+	fmt.Println(req.URL)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp == nil || resp.Body == nil {
+		return nil, fmt.Errorf("no body on successful response for %s", req.URL)
+	}
+	defer resp.Body.Close()
+
+	// Parse successful response
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read body from %s", req.URL)
+	}
+	var domain Domain
+	if err := json.Unmarshal(bs, &domain); err != nil {
+		return nil, fmt.Errorf("error parsing domain response: %v", err)
+	}
+	if domain.ObjectClassName != "domain" {
+		return &domain, fmt.Errorf("unknown objectClassName: %q", domain.ObjectClassName)
+	}
+	return &domain, nil
+}
 
 // RFC7482 3.2.1 Domain Search
 //
