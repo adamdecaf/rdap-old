@@ -66,6 +66,9 @@ type Client struct {
 	// RDAP official server.
 	BaseAddress string
 
+	// Enable debug logging
+	Debug bool
+
 	setup sync.Once
 }
 

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/adamdecaf/rdap/pkg/cmd"
 	"github.com/adamdecaf/rdap/pkg/cmd/domain"
 )
 
@@ -20,13 +21,17 @@ type command struct {
 }
 
 func main() {
+	cfg := &cmd.Config{
+		Debug: true,
+	}
+
 	commands := make(map[string]*command, 0)
 	commands["domain"] = &command{
 		fn: func(args []string) error {
 			if len(args) == 0 {
 				return errors.New("no domain specified")
 			}
-			return domain.PrintDetails(args[0])
+			return domain.PrintDetails(cfg, args[0])
 		},
 		help: "wat",
 	}

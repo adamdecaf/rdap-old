@@ -3,11 +3,12 @@ package domain
 import (
 	"fmt"
 
+	"github.com/adamdecaf/rdap/pkg/cmd"
 	"github.com/adamdecaf/rdap/pkg/rdap"
 	"github.com/adamdecaf/rdap/pkg/rdap/bootstrap"
 )
 
-func PrintDetails(d string) error {
+func PrintDetails(cfg *cmd.Config, d string) error {
 	boot := bootstrap.Registry{}
 	server, err := boot.ForDomain(d)
 	if err != nil {
@@ -19,9 +20,8 @@ func PrintDetails(d string) error {
 
 	client := rdap.Client{
 		BaseAddress: server,
-		// BaseAddress: rdap.DefaultServer,
+		Debug: cfg.Debug,
 	}
-
 	resp, err := client.Domain(d)
 	if err != nil {
 		return fmt.Errorf("grabbing %s: %v", d, err)
