@@ -96,7 +96,9 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 
 	// Build and make the actual HTTP request
 	req, err := c.makeRequest(fmt.Sprintf("/ip/%s", addr))
-	fmt.Println(req.URL)
+	if c.Debug {
+		fmt.Println("Using", req.URL)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -114,12 +116,13 @@ func (c *Client) IP(addr string) (*IPNetwork, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to read body from %s", req.URL)
 	}
-	fmt.Println(string(bs))
+	if c.Debug {
+		fmt.Println(string(bs))
+	}
 	var ipNetwork IPNetworkJSON
 	if err := json.Unmarshal(bs, &ipNetwork); err != nil {
 		return nil, fmt.Errorf("error parsing ip network response: %v", err)
 	}
-	fmt.Println("B: ", ipNetwork)
 	return nil, errors.New("") // TODO(Adam): parse successful response
 }
 
