@@ -21,11 +21,16 @@ type command struct {
 	help string
 }
 
+var (
+	flagInsecure = flag.Bool("insecure", false, "Disable security checks on remote servers (i.e. TLS verification)")
+)
+
 func main() {
 	flag.Parse()
 
 	cfg := &cmd.Config{
 		Debug: true,
+		InsecureSkipVerify: *flagInsecure,
 	}
 
 	commands := make(map[string]*command, 0)
@@ -45,13 +50,14 @@ func main() {
 		},
 	}
 
-	if len(os.Args) == 1 {
+	args := flag.CommandLine.Args()
+	if len(args) == 1 {
 		fmt.Println("ERROR: You must specify a command")
 		os.Exit(1)
 	}
-	raw := strings.ToLower(os.Args[1])
+	raw := strings.ToLower(args[0])
 	if cmd, ok := commands[raw]; ok {
-		rest := os.Args[2:]
+		rest := args[1:]
 		if err := cmd.fn(rest); err != nil {
 			fmt.Printf("ERROR: %s: %v\n", raw, err)
 			os.Exit(1)
