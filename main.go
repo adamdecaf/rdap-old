@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"errors"
+	"flag"
+	"fmt"
 	"os"
 	"strings"
 
@@ -21,6 +22,8 @@ type command struct {
 }
 
 func main() {
+	flag.Parse()
+
 	cfg := &cmd.Config{
 		Debug: true,
 	}

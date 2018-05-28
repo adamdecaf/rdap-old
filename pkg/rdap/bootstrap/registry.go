@@ -1,17 +1,17 @@
 package bootstrap
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/adamdecaf/rdap/pkg/httputil"
 )
 
 var (
@@ -21,25 +21,9 @@ var (
 	IPv4Url = "https://data.iana.org/rdap/ipv4.json"
 	IPv6Url = "https://data.iana.org/rdap/ipv6.json"
 
-	// Setup for the default http.Client used
+	// Setup for the http.Client used
 	DefaultHTTPClient = &http.Client{
-		Transport: &http.Transport{
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-				DualStack: true,
-			}).DialContext,
-			TLSClientConfig: &tls.Config{
-				MinVersion: tls.VersionTLS12,
-				MaxVersion: tls.VersionTLS12,
-
-				InsecureSkipVerify: true, // TODO(adam)
-			},
-			TLSHandshakeTimeout:   1 * time.Minute,
-			IdleConnTimeout:       1 * time.Minute,
-			ResponseHeaderTimeout: 1 * time.Minute,
-			ExpectContinueTimeout: 1 * time.Minute,
-		},
+		Transport: httputil.Transport(nil),
 		Timeout: 30 * time.Second,
 	}
 )
